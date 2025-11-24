@@ -25,7 +25,10 @@ services:
       - mglnet
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://orchestrator:8000
     container_name: frontend
     ports:
       - "3000:80"

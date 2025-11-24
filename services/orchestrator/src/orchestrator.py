@@ -4,15 +4,23 @@ from src.agents.architecture_agent import run_architecture
 from src.agents.devops_agent import run_devops
 from src.agents.risk_agent import run_risk
 
-def orchestrate(mode,prompt,provider,model):
-    res={}
-    if mode=="planning": res["planning"]=run_planning(prompt,provider,model)
-    elif mode=="architecture": res["architecture"]=run_architecture(prompt,provider,model)
-    elif mode=="devops": res["devops"]=run_devops(prompt,provider,model)
-    elif mode=="risk": res["risk"]=run_risk(prompt,provider,model)
-    else:
-        res["planning"]=run_planning(prompt,provider,model)
-        res["architecture"]=run_architecture(prompt,provider,model)
-        res["devops"]=run_devops(prompt,provider,model)
-        res["risk"]=run_risk(prompt,provider,model)
-    return res
+AGENTS = {
+    "planning": run_planning,
+    "architecture": run_architecture,
+    "devops": run_devops,
+    "risk": run_risk,
+}
+
+
+def orchestrate(mode: str, prompt: str, provider: str, model: str):
+    """Run one or all agents depending on the requested mode."""
+    selected = mode.lower() if mode else "auto"
+    results = {}
+
+    if selected == "auto" or selected not in AGENTS:
+        for name, func in AGENTS.items():
+            results[name] = func(prompt, provider, model)
+        return results
+
+    results[selected] = AGENTS[selected](prompt, provider, model)
+    return results

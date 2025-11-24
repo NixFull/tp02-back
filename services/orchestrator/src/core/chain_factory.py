@@ -1,5 +1,5 @@
 
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from .llm_factory import get_llm
 
 def build_chain(system, provider, model):
