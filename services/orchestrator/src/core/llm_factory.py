@@ -46,5 +46,9 @@ def get_llm(provider: str, model: str):
             model=model,
             temperature=0.2,
             base_url=os.getenv("OLLAMA_URL", "http://ollama:11434"),
+            # Keep responses snappy on CPU-only setups.
+            num_ctx=2048,
+            num_predict=256,
+            request_timeout=120,
         )
     raise ValueError(f"Unknown provider '{provider}'. Use openai, anthropic, groq, mistral, or ollama.")

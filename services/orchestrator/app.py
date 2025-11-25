@@ -2,7 +2,8 @@
 import os
 import httpx
 from dotenv import load_dotenv
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI, BackgroundTasks, HTTPException
+from langchain_community.llms.ollama import OllamaEndpointNotFoundError
 from fastapi.middleware.cors import CORSMiddleware
 from src.models import (
     OrchestratorRequest,
@@ -37,13 +38,25 @@ def health():
 
 @app.post("/api/orchestrator", response_model=OrchestratorResponse)
 def run(req: OrchestratorRequest):
-    out = orchestrate(req.mode, req.prompt, req.provider, req.model)
+    try:
+        out = orchestrate(req.mode, req.prompt, req.provider, req.model)
+    except ValueError as e:
+        # Surface configuration errors (e.g., missing API key) as 400 instead of 500.
+        raise HTTPException(status_code=400, detail=str(e))
+    except OllamaEndpointNotFoundError as e:
+        # Model missing in Ollama registry.
+        raise HTTPException(status_code=400, detail=str(e))
     return OrchestratorResponse(mode=req.mode, result=out)
 
 
 @app.post("/api/graph")
 def run_graph(req: OrchestratorRequest):
-    return run_multigraph(req.prompt, req.mode, req.provider, req.model)
+    try:
+        return run_multigraph(req.prompt, req.mode, req.provider, req.model)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except OllamaEndpointNotFoundError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.get("/api/ollama/models", response_model=OllamaModelsResponse)
