@@ -1,10 +1,15 @@
-
-version: "3.9"
+version: "3.8"
 services:
   ollama:
     build: ./services/ollama
     container_name: ollama
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: ${OLLAMA_MEMORY_LIMIT:-8g}
+        reservations:
+          memory: ${OLLAMA_MEMORY_RESERVATION:-6g}
     ports:
       - "11434:11434"
     volumes:
