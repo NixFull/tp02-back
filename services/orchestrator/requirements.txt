@@ -9,5 +9,6 @@ langchain-openai
 langchain-anthropic
 langchain-groq
 langchain-mistralai
+langchain-google-genai
 langchain-community
 langgraph

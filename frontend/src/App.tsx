@@ -5,6 +5,7 @@ import type { AgentResult, Mode, OllamaModel, Provider } from "./types";
 
 const defaultModels: Record<Provider, string> = {
   openai: "gpt-4o-mini",
+  google: "gemini-1.5-flash",
   anthropic: "claude-3-haiku-20240307",
   groq: "llama-3.1-70b-versatile",
   mistral: "mistral-large-latest",
@@ -21,6 +22,7 @@ const modes: { value: Mode; label: string }[] = [
 
 const providers: { value: Provider; label: string }[] = [
   { value: "openai", label: "OpenAI" },
+  { value: "google", label: "Google AI Studio" },
   { value: "anthropic", label: "Anthropic" },
   { value: "groq", label: "Groq" },
   { value: "mistral", label: "Mistral" },

@@ -4,6 +4,7 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_groq import ChatGroq
 from langchain_mistralai import ChatMistralAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.chat_models import ChatOllama
 
 
@@ -22,6 +23,12 @@ def get_llm(provider: str, model: str):
             model=model,
             temperature=0.2,
             openai_api_key=_require_env("OPENAI_API_KEY", provider),
+        )
+    if p == "google":
+        return ChatGoogleGenerativeAI(
+            model=model,
+            temperature=0.2,
+            google_api_key=_require_env("GOOGLE_API_KEY", provider),
         )
     if p == "anthropic":
         return ChatAnthropic(

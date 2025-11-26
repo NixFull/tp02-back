@@ -1,6 +1,6 @@
 export type Mode = "auto" | "planning" | "architecture" | "devops" | "risk";
 
-export type Provider = "openai" | "anthropic" | "groq" | "mistral" | "ollama";
+export type Provider = "openai" | "google" | "anthropic" | "groq" | "mistral" | "ollama";
 
 export type AgentResult = Partial<Record<Exclude<Mode, "auto">, string>>;
 

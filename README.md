@@ -16,7 +16,7 @@ Les agents (planification, architecture, DevOps, risques) peuvent être exécut�
 
 ## Variables d'environnement
 
-- `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GROQ_API_KEY`, `MISTRAL_API_KEY` : clés LLM selon le provider choisi.
+- `OPENAI_API_KEY`, `GOOGLE_API_KEY`, `ANTHROPIC_API_KEY`, `GROQ_API_KEY`, `MISTRAL_API_KEY` : clés LLM selon le provider choisi.
 - `OLLAMA_URL` : URL d'Ollama (par défaut `http://ollama:11434`).
 - `VITE_API_URL` : URL de l'API pour le frontend (par défaut `http://localhost:8000`).
 
