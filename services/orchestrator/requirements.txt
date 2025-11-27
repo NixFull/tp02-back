@@ -12,3 +12,4 @@ langchain-mistralai
 langchain-google-genai
 langchain-community
 langgraph
+mlflow

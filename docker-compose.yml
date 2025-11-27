@@ -23,8 +23,21 @@ services:
       - .env
     depends_on:
       - ollama
+      - mlflow
     ports:
       - "8000:8000"
+    networks:
+      - mglnet
+
+  mlflow:
+    build: ./services/mlflow
+    container_name: mlflow
+    env_file:
+      - .env
+    ports:
+      - "5001:5000"
+    volumes:
+      - mlflow_data:/app/mlruns
     networks:
       - mglnet
 
@@ -45,3 +58,4 @@ networks:
 
 volumes:
   ollama_data:
+  mlflow_data:
