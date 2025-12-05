@@ -1,21 +1,21 @@
 import type { AgentResult } from "../types";
+import { Card, CardContent, CardTitle } from "./ui/card";
 
 export function ResultGrid({ results }: { results: AgentResult }) {
   const entries = Object.entries(results);
   if (!entries.length) return null;
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="flex w-full gap-4">
       {entries.map(([key, value]) => (
-        <div
-          key={key}
-          className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 p-4 shadow-sm"
-        >
-          <h3 className="text-base font-semibold text-slate-900">{key}</h3>
-          <pre className="whitespace-pre-wrap break-words font-mono text-sm text-slate-900">
-            {value}
-          </pre>
-        </div>
+        <Card key={key} className="w-full min-w-[280px] max-w-sm shrink-0 p-4">
+          <CardTitle className="text-base">{key}</CardTitle>
+          <CardContent className="mt-2">
+            <pre className="whitespace-pre-wrap break-words font-mono text-sm text-slate-900">
+              {value}
+            </pre>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );

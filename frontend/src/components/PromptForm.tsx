@@ -1,6 +1,11 @@
 import type { FormEvent } from "react";
 import type { Mode, Provider } from "../types";
-import { primaryButton, secondaryButton } from "./buttonStyles";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Select } from "./ui/select";
+import { Textarea } from "./ui/textarea";
 
 interface PromptFormProps {
   prompt: string;
@@ -42,69 +47,65 @@ export function PromptForm({
   onLoadOllamaModels,
 }: PromptFormProps) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-lg backdrop-blur">
+    <Card className="p-5">
       <form
         onSubmit={onSubmit}
         className="grid gap-4 md:grid-cols-2 md:items-start"
       >
-        <label className="flex flex-col gap-2 text-sm font-semibold text-slate-900">
+        <Label className="flex flex-col gap-2 text-sm font-semibold text-slate-900">
           Mode
-          <select
+          <Select
             value={mode}
             onChange={(e) => onModeChange(e.target.value as Mode)}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-normal text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
           >
             {modes.map((m) => (
               <option key={m.value} value={m.value}>
                 {m.label}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Label>
 
-        <label className="flex flex-col gap-2 text-sm font-semibold text-slate-900">
+        <Label className="flex flex-col gap-2 text-sm font-semibold text-slate-900">
           Fournisseur
-          <select
+          <Select
             value={provider}
             onChange={(e) => onProviderChange(e.target.value as Provider)}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-normal text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
           >
             {providers.map((p) => (
               <option key={p.value} value={p.value}>
                 {p.label}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Label>
 
-        <label className="flex flex-col gap-2 text-sm font-semibold text-slate-900">
+        <Label className="flex flex-col gap-2 text-sm font-semibold text-slate-900">
           Modèle
-          <input
+          <Input
             value={model}
             onChange={(e) => onModelChange(e.target.value)}
             placeholder="Exemple: gpt-4o-mini ou llama3.1:8b"
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-normal text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
           />
           {provider === "ollama" && (
             <span className="text-xs font-normal text-slate-600">
               Doit correspondre à un modèle installé sur votre Ollama local.
             </span>
           )}
-        </label>
+        </Label>
 
-        <label className="flex flex-col gap-2 text-sm font-semibold text-slate-900 md:col-span-2">
+        <Label className="flex flex-col gap-2 text-sm font-semibold text-slate-900 md:col-span-2">
           Énoncé du projet
-          <textarea
+          <Textarea
             value={prompt}
             onChange={(e) => onPromptChange(e.target.value)}
             placeholder="Décrivez le contexte, les objectifs et les contraintes du projet à analyser"
-            className="min-h-[160px] w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-normal text-slate-900 shadow-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            className="min-h-[160px]"
           />
-        </label>
+        </Label>
 
         <div className="flex flex-wrap items-center gap-3 md:col-span-2">
-          <button
-            className={primaryButton}
+          <Button
             type="submit"
             disabled={loading || disabled}
           >
@@ -113,21 +114,21 @@ export function PromptForm({
               : isGraph
               ? "Lancer (graphe)"
               : "Lancer (séquentiel)"}
-          </button>
-          <button
-            className={secondaryButton}
+          </Button>
+          <Button
+            variant="secondary"
             type="button"
             onClick={onToggleGraph}
             disabled={loading}
           >
             {isGraph ? "Basculer en séquentiel" : "Basculer en graphe"}
-          </button>
+          </Button>
         </div>
 
         {provider === "ollama" && (
           <div className="flex flex-wrap items-center gap-3 md:col-span-2">
-            <button
-              className={secondaryButton}
+            <Button
+              variant="secondary"
               type="button"
               onClick={onLoadOllamaModels}
               disabled={loadingModels}
@@ -135,13 +136,13 @@ export function PromptForm({
               {loadingModels
                 ? "Chargement modèles..."
                 : "Lister modèles Ollama"}
-            </button>
+            </Button>
             <span className="text-xs font-normal text-slate-600">
               Cliquez sur un modèle pour lancer un pull.
             </span>
           </div>
         )}
       </form>
-    </div>
+    </Card>
   );
 }

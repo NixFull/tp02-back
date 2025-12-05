@@ -1,5 +1,6 @@
 import type { OllamaModel } from "../types";
-import { secondaryButton } from "./buttonStyles";
+import { Button } from "./ui/button";
+import { Card, CardDescription, CardTitle } from "./ui/card";
 
 interface OllamaModelsProps {
   models: OllamaModel[];
@@ -9,29 +10,22 @@ interface OllamaModelsProps {
 
 export function OllamaModels({ models, pulled, onPull }: OllamaModelsProps) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-lg backdrop-blur">
-      <p className="text-lg font-semibold text-slate-900">Modèles Ollama disponibles</p>
+    <Card className="p-5">
+      <CardTitle>Modèles Ollama disponibles</CardTitle>
       <div className="mt-3 grid gap-4 md:grid-cols-2">
         {models.map((m) => (
-          <div
-            key={m.name}
-            className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 p-4 shadow-sm"
-          >
-            <h3 className="text-base font-semibold text-slate-900">{m.name}</h3>
-            <p className="text-sm text-slate-600">
+          <Card key={m.name} className="p-4">
+            <CardTitle className="text-base">{m.name}</CardTitle>
+            <CardDescription className="mt-1">
               Taille: {m.size ? `${Math.round(m.size / 1_000_000_000)} GB` : "?"} ·
               Digest: {m.digest ? m.digest.slice(0, 12) : "n/a"}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                className={secondaryButton}
-                type="button"
-                onClick={() => onPull(m.name)}
-              >
+            </CardDescription>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Button variant="secondary" type="button" onClick={() => onPull(m.name)}>
                 Pull/MAJ ce modèle
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
       {pulled && (
@@ -39,6 +33,6 @@ export function OllamaModels({ models, pulled, onPull }: OllamaModelsProps) {
           Pull lancé pour {pulled}. Suivez les logs Ollama pour la progression.
         </p>
       )}
-    </div>
+    </Card>
   );
 }

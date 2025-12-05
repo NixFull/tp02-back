@@ -1,5 +1,7 @@
 import type { AgentResult } from "../types";
 import { ResultGrid } from "./ResultGrid";
+import { Badge } from "./ui/badge";
+import { Card, CardContent } from "./ui/card";
 
 export function ResultsPanel({
   results,
@@ -9,25 +11,25 @@ export function ResultsPanel({
   isGraph: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-lg backdrop-blur">
+    <Card className="p-5">
       <div className="flex flex-wrap items-center gap-3">
-        <span className="inline-flex items-center rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-900">
+        <Badge className="bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-100">
           Résultats agents
-        </span>
+        </Badge>
         <span className="text-sm text-slate-600">
           {isGraph
             ? "Exécution pilotée par graphe (superviseur -> agents)."
             : "Exécution séquentielle simple sur le backend."}
         </span>
       </div>
-      <div className="mt-3">
+      <CardContent className="mt-3 overflow-x-auto pb-1">
         <ResultGrid results={results} />
         {!Object.keys(results).length && (
           <p className="text-sm text-slate-600">
             Lancez une analyse pour voir les propositions.
           </p>
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

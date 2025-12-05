@@ -1,8 +1,6 @@
+import { Alert } from "./ui/alert";
+
 export function ErrorBanner({ message }: { message: string }) {
   if (!message) return null;
-  return (
-    <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-700">
-      {message}
-    </div>
-  );
+  return <Alert>{message}</Alert>;
 }
