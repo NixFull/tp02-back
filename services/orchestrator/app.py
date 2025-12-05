@@ -3,7 +3,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.api import router as orchestrator_router
 
-app = FastAPI(title="MGL7320 Orchestrator")
+tags_metadata = [
+    {"name": "orchestrator", "description": "APIs orchestrateur et graphe multi-agents."},
+    {"name": "health", "description": "Endpoints de santé de l'application."},
+]
+
+app = FastAPI(
+    title="MGL7320 Orchestrator",
+    version="1.0.0",
+    description="Orchestrateur multi-agents (Analyste, Architecte, Dev, QA, DevOps, PM).",
+    openapi_tags=tags_metadata,
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,17 +24,17 @@ app.add_middleware(
 )
 
 
-@app.get("/health")
+@app.get("/health", tags=["health"], summary="Healthcheck basique")
 def health():
     return {"status": "ok"}
 
 
-@app.get("/live")
+@app.get("/live", tags=["health"], summary="Liveness probe")
 def live():
     return {"status": "live"}
 
 
-@app.get("/ready")
+@app.get("/ready", tags=["health"], summary="Readiness probe")
 def ready():
     return {"status": "ready"}
 

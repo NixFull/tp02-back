@@ -7,10 +7,5 @@ class GraphState(TypedDict, total=False):
     provider: str
     model: str
     executed: list[str]
-    analyst: Optional[str]
-    architecture: Optional[str]
-    dev: Optional[str]
-    qa: Optional[str]
-    devops: Optional[str]
-    pm: Optional[str]
+    results: dict[str, str]
     next_agent: Optional[str]

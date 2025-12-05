@@ -1,12 +1,12 @@
-
+from src.agents.registry import get_ordered_agents
 from src.graph.state import GraphState
 
 
 async def supervisor_node(state: GraphState):
     done = list(state.get("executed", []))
+    order = [a["id"] for a in get_ordered_agents()]
 
     if state["mode"] == "auto":
-        order = ["analyst", "architecture", "dev", "qa", "devops", "pm"]
         for agent in order:
             if agent not in done:
                 done.append(agent)
