@@ -23,10 +23,12 @@ const defaultModels: Record<Provider, string> = {
 
 const modeOptions: { value: Mode; label: string }[] = [
   { value: "auto", label: "Auto (tous les agents)" },
-  { value: "planning", label: "Planification" },
-  { value: "architecture", label: "Architecture" },
+  { value: "analyst", label: "Analyste (backlog)" },
+  { value: "architecture", label: "Architecte" },
+  { value: "dev", label: "Dev (code/API)" },
+  { value: "qa", label: "QA (tests)" },
   { value: "devops", label: "DevOps" },
-  { value: "risk", label: "Risques" },
+  { value: "pm", label: "PM (dashboard)" },
 ];
 
 const providerOptions: { value: Provider; label: string }[] = [

@@ -6,7 +6,7 @@ async def supervisor_node(state: GraphState):
     done = list(state.get("executed", []))
 
     if state["mode"] == "auto":
-        order = ["planning", "architecture", "devops", "risk"]
+        order = ["analyst", "architecture", "dev", "qa", "devops", "pm"]
         for agent in order:
             if agent not in done:
                 done.append(agent)

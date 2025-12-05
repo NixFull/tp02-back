@@ -6,7 +6,7 @@ but do not block the main flow.
 
 import json
 import os
-from typing import Any, Mapping, Optional, Sequence
+from typing import Any, List, Mapping, Optional, Sequence
 
 
 def _mlflow():
@@ -23,6 +23,55 @@ def _mlflow():
     except Exception as e:
         print("MLflow init skipped:", e)
         return None
+
+
+def get_langchain_callbacks(run_name: str) -> List[object]:
+    """Optional MLflow callback for LangChain; returns [] if unavailable."""
+    mlflow = _mlflow()
+    if not mlflow:
+        return []
+    try:
+        from langchain.callbacks.mlflow_callback import MLflowCallbackHandler
+
+        handler = MLflowCallbackHandler(
+            tracking_uri=os.getenv("MLFLOW_TRACKING_URI"),
+            experiment_name=os.getenv("MLFLOW_EXPERIMENT_NAME", "orchestrator"),
+            run_name=run_name,
+        )
+        return [handler]
+    except Exception as e:
+        print("MLflow LangChain callback skipped:", e)
+        return []
+
+
+def _extract_run_id(handler: object) -> Optional[str]:
+    for attr in ("run_id", "mlflow_run", "run"):
+        run_obj = getattr(handler, attr, None)
+        if isinstance(run_obj, str):
+            return run_obj
+        if getattr(run_obj, "info", None) and getattr(run_obj.info, "run_id", None):
+            return run_obj.info.run_id
+    return None
+
+
+def log_callback_artifacts(handler: object, prompt: str, payload: Any, name: str, prompt_template: Any = None):
+    """Log prompt/result to the run created by the MLflow callback."""
+    mlflow = _mlflow()
+    if not mlflow:
+        return
+    run_id = _extract_run_id(handler)
+    if not run_id:
+        return
+    try:
+        with mlflow.start_run(run_id=run_id):
+            mlflow.log_text(prompt, f"{name}_prompt.txt")
+            if prompt_template:
+                mlflow.log_dict(prompt_template, f"{name}_prompt_template.json")
+            if payload is not None:
+                mlflow.log_text(str(payload), f"{name}_result.txt")
+                mlflow.log_dict({"result": payload}, f"{name}_result.json")
+    except Exception as e:
+        print("MLflow artifact logging to callback run skipped:", e)
 
 
 def _build_summary(mode: str, provider: str, model: str, agent_runs: Sequence[dict], error: Optional[str]):
@@ -53,6 +102,7 @@ def log_run(
     duration_s: Optional[float] = None,
     error: Optional[str] = None,
     agent_runs: Optional[Sequence[dict]] = None,
+    prompt_templates: Optional[Mapping[str, Any]] = None,
 ):
     """Log a parent run and optional nested agent runs."""
     mlflow = _mlflow()
@@ -87,6 +137,9 @@ def log_run(
             )
             mlflow.log_dict({"prompt": prompt}, "prompt.json")
             mlflow.log_text(prompt, "prompt.txt")
+            if prompt_templates:
+                mlflow.log_dict(prompt_templates, "prompt_templates.json")
+                mlflow.log_text(json.dumps(prompt_templates, ensure_ascii=False, indent=2), "prompt_templates.txt")
             if results:
                 mlflow.log_text(json.dumps(results, ensure_ascii=False, indent=2), "results.json")
             summary = _build_summary(mode, provider, model, agent_runs, error)

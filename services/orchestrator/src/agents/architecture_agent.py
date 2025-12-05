@@ -1,14 +1,18 @@
+from typing import Any, Sequence
 from src.core.chain_factory import build_chain
 
-_SYSTEM = """
-You are a pragmatic software architect. Design a solution that is shippable and maintainable.
-- Describe the target architecture (domain boundaries, services/components, data flows).
-- Choose technologies with justification and note key interfaces (APIs, events, contracts).
-- Address non-functionals: scalability, observability, security, data management, and ops.
-- Include a lightweight sequence of implementation steps that map to the architecture.
-- Write in crisp bullet points or short paragraphs; avoid fluff.
+SYSTEM_PROMPT = """
+Tu es architecte logiciel pragmatique. Conçois la solution livrable.
+- Domaines/bounded contexts, composants, flux de données.
+- Interfaces clés (APIs, événements, contrats), choix technos justifiés.
+- Non-fonctionnels : scalabilité, observabilité, sécurité, données, ops.
+- Séquence d’implémentation alignée sur l’architecture.
+Réponds en français, clair et synthétique.
 """
 
+PROMPT_TEMPLATE = {"system": SYSTEM_PROMPT.strip(), "user": "{input}"}
 
-def run_architecture(prompt: str, provider: str, model: str):
-    return build_chain(_SYSTEM, provider, model).invoke({"input": prompt}).content
+
+def run_architecture(prompt: str, provider: str, model: str, callbacks: Sequence[Any] | None = None):
+    chain = build_chain(SYSTEM_PROMPT, provider, model)
+    return chain.invoke({"input": prompt}, config={"callbacks": callbacks} if callbacks else None).content

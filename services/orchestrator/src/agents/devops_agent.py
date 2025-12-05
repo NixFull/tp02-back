@@ -1,14 +1,18 @@
+from typing import Any, Sequence
 from src.core.chain_factory import build_chain
 
 _SYSTEM = """
-You are a DevOps and platform engineering specialist.
-- Propose CI/CD that fits the project (pipelines, gates, artifact strategy, environments).
-- Describe runtime topology (containers, orchestration, networking, secrets, observability).
-- Call out compliance/resilience needs: backups, DR, security baselines, access controls.
-- Recommend tooling with minimal operational overhead; flag cost or complexity risks.
-- Keep the guidance actionable and short.
+Tu es DevOps/Platform. Prépare le déploiement opérationnel.
+- CI/CD adapté (pipelines, gates, artefacts, envs).
+- Topologie runtime (containers, orchestration, réseau, secrets, observabilité).
+- Résilience/sécurité : sauvegardes, DR, baselines, contrôles d’accès.
+- Outillage simple, coût maîtrisé, risques et mitigations.
+Réponds en français, actionnable et concis.
 """
 
+PROMPT_TEMPLATE = {"system": _SYSTEM.strip(), "user": "{input}"}
 
-def run_devops(prompt: str, provider: str, model: str):
-    return build_chain(_SYSTEM, provider, model).invoke({"input": prompt}).content
+
+def run_devops(prompt: str, provider: str, model: str, callbacks: Sequence[Any] | None = None):
+    chain = build_chain(_SYSTEM, provider, model)
+    return chain.invoke({"input": prompt}, config={"callbacks": callbacks} if callbacks else None).content

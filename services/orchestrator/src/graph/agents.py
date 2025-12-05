@@ -1,13 +1,14 @@
-
-from src.agents.planning_agent import run_planning
+from src.agents.analyst_agent import run_analyst
 from src.agents.architecture_agent import run_architecture
+from src.agents.dev_agent import run_dev
+from src.agents.qa_agent import run_qa
 from src.agents.devops_agent import run_devops
-from src.agents.risk_agent import run_risk
+from src.agents.pm_agent import run_pm
 from src.graph.state import GraphState
 
 
-async def planner_node(state: GraphState):
-    state["planning"] = run_planning(state["prompt"], state["provider"], state["model"])
+async def analyst_node(state: GraphState):
+    state["analyst"] = run_analyst(state["prompt"], state["provider"], state["model"])
     return state
 
 
@@ -16,11 +17,21 @@ async def architecture_node(state: GraphState):
     return state
 
 
+async def dev_node(state: GraphState):
+    state["dev"] = run_dev(state["prompt"], state["provider"], state["model"])
+    return state
+
+
+async def qa_node(state: GraphState):
+    state["qa"] = run_qa(state["prompt"], state["provider"], state["model"])
+    return state
+
+
 async def devops_node(state: GraphState):
     state["devops"] = run_devops(state["prompt"], state["provider"], state["model"])
     return state
 
 
-async def risk_node(state: GraphState):
-    state["risk"] = run_risk(state["prompt"], state["provider"], state["model"])
+async def pm_node(state: GraphState):
+    state["pm"] = run_pm(state["prompt"], state["provider"], state["model"])
     return state

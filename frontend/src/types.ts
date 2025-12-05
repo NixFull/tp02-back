@@ -1,4 +1,11 @@
-export type Mode = "auto" | "planning" | "architecture" | "devops" | "risk";
+export type Mode =
+  | "auto"
+  | "analyst"
+  | "architecture"
+  | "dev"
+  | "qa"
+  | "devops"
+  | "pm";
 
 export type Provider = "openai" | "google" | "anthropic" | "groq" | "mistral" | "ollama";
 

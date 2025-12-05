@@ -1,6 +1,13 @@
 
 from langgraph.graph import StateGraph, END
-from src.graph.agents import planner_node, architecture_node, devops_node, risk_node
+from src.graph.agents import (
+    analyst_node,
+    architecture_node,
+    dev_node,
+    qa_node,
+    devops_node,
+    pm_node,
+)
 from src.graph.supervisor import supervisor_node
 from src.graph.state import GraphState
 
@@ -8,10 +15,12 @@ from src.graph.state import GraphState
 def build_graph():
     g = StateGraph(GraphState)
     g.add_node("supervisor", supervisor_node)
-    g.add_node("planning", planner_node)
+    g.add_node("analyst", analyst_node)
     g.add_node("architecture", architecture_node)
+    g.add_node("dev", dev_node)
+    g.add_node("qa", qa_node)
     g.add_node("devops", devops_node)
-    g.add_node("risk", risk_node)
+    g.add_node("pm", pm_node)
 
     g.set_entry_point("supervisor")
 
@@ -19,15 +28,17 @@ def build_graph():
         "supervisor",
         lambda state: state["next_agent"],
         {
-            "planning": "planning",
+            "analyst": "analyst",
             "architecture": "architecture",
+            "dev": "dev",
+            "qa": "qa",
             "devops": "devops",
-            "risk": "risk",
+            "pm": "pm",
             "end": END,
         },
     )
 
-    for agent in ["planning", "architecture", "devops", "risk"]:
+    for agent in ["analyst", "architecture", "dev", "qa", "devops", "pm"]:
         g.add_edge(agent, "supervisor")
 
     return g.compile()
