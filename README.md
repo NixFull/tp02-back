@@ -5,7 +5,11 @@ Les agents (planification, architecture, DevOps, risques) peuvent être exécut�
 
 ## Démarrage rapide
 
-1. Renseigner les clés API nécessaires dans `.env` (voir `.env.example`).  
+1. Générer le `.env` si absent :
+   ```bash
+   ./scripts/ensure-env.sh
+   ```
+   Puis renseigner les clés API nécessaires.
 2. Lancer l'environnement complet :
    ```bash
    docker-compose up --build
