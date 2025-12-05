@@ -1,25 +1,22 @@
-export type Mode =
-  | "auto"
-  | "analyst"
-  | "architecture"
-  | "dev"
-  | "qa"
-  | "devops"
-  | "pm";
+export type AgentResult = Record<string, string>;
+
+export interface AgentMeta {
+  id: string;
+  label: string;
+  description: string;
+}
 
 export type Provider = "openai" | "google" | "anthropic" | "groq" | "mistral" | "ollama";
 
-export type AgentResult = Partial<Record<Exclude<Mode, "auto">, string>>;
-
 export interface OrchestratorRequest {
   prompt: string;
-  mode: Mode;
+  mode: string;
   provider: Provider;
   model: string;
 }
 
 export interface OrchestratorResponse {
-  mode: Mode;
+  mode: string;
   result: AgentResult;
 }
 

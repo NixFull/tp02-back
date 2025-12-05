@@ -4,13 +4,14 @@ import {
   callOrchestrator,
   fetchOllamaModels,
   pullOllamaModel,
+  fetchAgents,
 } from "./api";
 import { ErrorBanner } from "./components/ErrorBanner";
 import { HeroSection } from "./components/HeroSection";
 import { OllamaModels } from "./components/OllamaModels";
 import { PromptForm } from "./components/PromptForm";
 import { ResultsPanel } from "./components/ResultsPanel";
-import type { AgentResult, Mode, OllamaModel, Provider } from "./types";
+import type { AgentMeta, AgentResult, OllamaModel, Provider } from "./types";
 
 const defaultModels: Record<Provider, string> = {
   openai: "gpt-4o-mini",
@@ -20,16 +21,6 @@ const defaultModels: Record<Provider, string> = {
   mistral: "mistral-large-latest",
   ollama: "llama3.1:8b",
 };
-
-const modeOptions: { value: Mode; label: string }[] = [
-  { value: "auto", label: "Auto (tous les agents)" },
-  { value: "analyst", label: "Analyste (backlog)" },
-  { value: "architecture", label: "Architecte" },
-  { value: "dev", label: "Dev (code/API)" },
-  { value: "qa", label: "QA (tests)" },
-  { value: "devops", label: "DevOps" },
-  { value: "pm", label: "PM (dashboard)" },
-];
 
 const providerOptions: { value: Provider; label: string }[] = [
   { value: "openai", label: "OpenAI" },
@@ -44,7 +35,7 @@ export default function App() {
   const [prompt, setPrompt] = useState(
     "Nous voulons une preuve de concept multi-agents pour planifier, architecturer et livrer une application web utilisant des LLMs."
   );
-  const [mode, setMode] = useState<Mode>("auto");
+  const [mode, setMode] = useState<string>("auto");
   const [provider, setProvider] = useState<Provider>("openai");
   const [model, setModel] = useState<string>(defaultModels["openai"]);
   const [results, setResults] = useState<AgentResult>({});
@@ -54,10 +45,19 @@ export default function App() {
   const [ollamaModels, setOllamaModels] = useState<OllamaModel[]>([]);
   const [loadingModels, setLoadingModels] = useState(false);
   const [pulled, setPulled] = useState<string | null>(null);
+  const [agents, setAgents] = useState<AgentMeta[]>([]);
 
   useEffect(() => {
     setModel(defaultModels[provider]);
   }, [provider]);
+
+  useEffect(() => {
+    fetchAgents()
+      .then((a) => setAgents(a))
+      .catch((e) =>
+        setError(e instanceof Error ? e.message : "Erreur chargement agents")
+      );
+  }, []);
 
   const disabled = useMemo(() => !prompt.trim(), [prompt]);
 
@@ -122,7 +122,10 @@ export default function App() {
           mode={mode}
           provider={provider}
           model={model}
-          modes={modeOptions}
+          modes={[
+            { value: "auto", label: "Auto (tous les agents)" },
+            ...agents.map((a) => ({ value: a.id, label: a.label })),
+          ]}
           providers={providerOptions}
           isGraph={isGraph}
           loading={loading}

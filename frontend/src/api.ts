@@ -1,10 +1,4 @@
-import type {
-  AgentResult,
-  Mode,
-  OllamaModel,
-  OrchestratorRequest,
-  OrchestratorResponse,
-} from "./types";
+import type { AgentResult, AgentMeta, OrchestratorRequest, OrchestratorResponse, OllamaModel } from "./types";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
@@ -48,4 +42,9 @@ export async function pullOllamaModel(name: string): Promise<void> {
     body: JSON.stringify({ model: name }),
   });
   await handleResponse(res);
+}
+
+export async function fetchAgents(): Promise<AgentMeta[]> {
+  const res = await fetch(`${API_URL}/api/agents`, { method: "GET" });
+  return await handleResponse<AgentMeta[]>(res);
 }

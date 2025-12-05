@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import type { Mode, Provider } from "../types";
+import type { Provider } from "../types";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Input } from "./ui/input";
@@ -9,10 +9,10 @@ import { Textarea } from "./ui/textarea";
 
 interface PromptFormProps {
   prompt: string;
-  mode: Mode;
+  mode: string;
   provider: Provider;
   model: string;
-  modes: { value: Mode; label: string }[];
+  modes: { value: string; label: string }[];
   providers: { value: Provider; label: string }[];
   isGraph: boolean;
   loading: boolean;
@@ -20,7 +20,7 @@ interface PromptFormProps {
   loadingModels: boolean;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   onPromptChange: (value: string) => void;
-  onModeChange: (value: Mode) => void;
+  onModeChange: (value: string) => void;
   onProviderChange: (value: Provider) => void;
   onModelChange: (value: string) => void;
   onToggleGraph: () => void;
@@ -56,7 +56,7 @@ export function PromptForm({
           Mode
           <Select
             value={mode}
-            onChange={(e) => onModeChange(e.target.value as Mode)}
+            onChange={(e) => onModeChange(e.target.value)}
           >
             {modes.map((m) => (
               <option key={m.value} value={m.value}>
