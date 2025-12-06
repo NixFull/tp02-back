@@ -111,7 +111,7 @@ function ResultGrid({ results }: { results: AgentResult }) {
                     setExpandedKey(isExpanded ? null : key)
                   }
                 >
-                  {isExpanded ? "Réduire" : "Agrandir"}
+                  {isExpanded ? "−" : "+"}
                 </button>
               </div>
             </div>
@@ -123,6 +123,7 @@ function ResultGrid({ results }: { results: AgentResult }) {
     </div>
   );
 }
+
 
 export default function App() {
   const [prompt, setPrompt] = useState(
