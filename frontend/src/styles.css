@@ -411,8 +411,295 @@ button:not(:disabled):hover {
   color: #111827;
   max-height: 260px;
   overflow: auto;
+  padding: 10px 12px;/* =========================
+   Global AI / futuristic vibe
+   ========================= */
+
+.page {
+  min-height: 100vh;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 55%),
+    radial-gradient(circle at top right, rgba(129, 140, 248, 0.18), transparent 55%),
+    linear-gradient(180deg, #020617 0%, #020617 45%, #020617 100%);
+  color: #e5e7eb;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.hero .title {
+  font-size: 26px;
+  font-weight: 700;
+  background: linear-gradient(120deg, #e5e7eb, #a5b4fc, #22d3ee);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.hero .subtitle {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #cbd5f5;
+}
+
+/* Panels = glass cards */
+
+.panel {
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.7);
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  backdrop-filter: blur(18px);
+}
+
+/* Buttons */
+
+.primary {
+  background: linear-gradient(135deg, #4f46e5, #06b6d4);
+  border: none;
+  color: #f9fafb;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.45);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+
+.primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow: 0 18px 46px rgba(59, 130, 246, 0.55);
+}
+
+.primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.secondary {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  padding: 7px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
+}
+
+.secondary:hover:not(:disabled) {
+  background: rgba(30, 64, 175, 0.6);
+  border-color: #818cf8;
+  transform: translateY(-1px);
+}
+
+/* =========================
+   Result cards – stages + expand
+   ========================= */
+
+.results {
+  display: grid;
+  gap: 14px;
+}
+
+/* When one card is expanded, give it room to breathe */
+.results--has-expanded .result-card--expanded {
+  grid-column: 1 / -1;
+}
+
+.result-card--stage {
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background:
+    radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.18), transparent 55%),
+    radial-gradient(circle at 100% 0, rgba(129, 140, 248, 0.2), transparent 55%),
+    rgba(15, 23, 42, 0.95);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.8);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle glowing border */
+.result-card--stage::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  pointer-events: none;
+}
+
+/* Expanded = taller / more reading space */
+.result-card--expanded {
+  padding: 18px 18px;
+}
+
+.result-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.result-card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.result-card-emoji {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.result-card-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.result-card-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.result-stage-pill {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(30, 64, 175, 0.8);
+  color: #e5e7eb;
+  border: 1px solid rgba(129, 140, 248, 0.7);
+  white-space: nowrap;
+}
+
+.result-card-toggle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(6px);
+  color: #111;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 22px;
+  text-align: center;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.result-card-toggle:hover {
+  background: white;
+  transform: scale(1.1);
+}
+
+
+.result-card-body {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #e5e7eb;
+  max-height: 220px;
+  overflow: auto;
   padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px dashed rgba(148, 163, 184, 0.7);
+}
+
+/* Expanded card gets more vertical room */
+.result-card--expanded .result-card-body {
+  max-height: 400px;
+}
+
+/* Scrollbar styling inside code blocks (nice touch) */
+.result-card-body::-webkit-scrollbar {
+  width: 6px;
+}
+.result-card-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.result-card-body::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.8);
+  border-radius: 999px;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px;
+  }
+
+  .hero {
+    flex-direction: column;
+  }
+
+  .panel {
+    padding: 14px 16px;
+  }
+}
+
   border-radius: 12px;
   background: rgba(15, 23, 42, 0.03);
   border: 1px dashed rgba(148, 163, 184, 0.7);
+}
+/* Make expand/collapse visible */
+.result-card {
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+/* Default (collapsed) height for content */
+.result-card-body {
+  max-height: 180px;
+}
+
+/* Expanded card: more height */
+.result-card--expanded .result-card-body {
+  max-height: 600px; /* adjust if you want even bigger */
+}
+
+/* Small round + / − button */
+.result-card-toggle {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: rgba(255, 255, 255, 0.9);
+  color: #111827;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.result-card-toggle:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 16px rgba(148, 163, 184, 0.6);
+  background: #ffffff;
 }
