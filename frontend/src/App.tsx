@@ -34,6 +34,33 @@ const providers: { value: Provider; label: string }[] = [
   { value: "ollama", label: "Ollama (local)" },
 ];
 
+function Navbar() {
+  return (
+    <header className="navbar">
+      <div className="navbar-inner">
+        <div className="navbar-left">
+          <div className="navbar-logo">IA</div>
+          <div className="navbar-text">
+            <span className="navbar-kicker">MGL7360 · PoC multi-agents</span>
+            <span className="navbar-title">Orchestrateur IA</span>
+          </div>
+        </div>
+
+        <nav className="navbar-links">
+          <a href="#interface">Interface</a>
+          <a href="#how-it-works">Comment ça marche&nbsp;?</a>
+          <a href="#models">Modèles</a>
+        </nav>
+
+        <div className="navbar-pill">
+          <span className="navbar-pill-dot" />
+          <span className="navbar-pill-label">Backend en ligne</span>
+        </div>
+      </div>
+    </header>
+  );
+}
+
 function ResultGrid({ results }: { results: AgentResult }) {
   const entries = Object.entries(results);
   if (!entries.length) return null;
@@ -124,7 +151,10 @@ export default function App() {
 
   return (
     <div className="page">
-      <div className="hero">
+      {/* ✅ new navbar, original content untouched below */}
+      <Navbar />
+
+      <div className="hero" id="interface">
         <div>
           <span className="badge">MGL7360 · PoC multi-agents</span>
           <h1 className="title">
@@ -137,7 +167,7 @@ export default function App() {
             LangGraph.
           </p>
         </div>
-        <div className="panel">
+        <div className="panel" id="how-it-works">
           <p className="section-title">Mode d&apos;emploi</p>
           <p className="inline-note">
             1. Choisissez le fournisseur LLM et le modèle disponible. 2.
@@ -248,7 +278,7 @@ export default function App() {
       {error && <div className="error">{error}</div>}
 
       {provider === "ollama" && ollamaModels.length > 0 && (
-        <div className="panel">
+        <div className="panel" id="models">
           <p className="section-title">Modèles Ollama disponibles</p>
           <div className="results">
             {ollamaModels.map((m) => (
