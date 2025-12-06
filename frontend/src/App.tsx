@@ -61,18 +61,45 @@ function Navbar() {
   );
 }
 
+/** 🔍 Only visuals changed here – data/logic is identical */
 function ResultGrid({ results }: { results: AgentResult }) {
   const entries = Object.entries(results);
   if (!entries.length) return null;
 
+  const stageMeta: Record<string, { label: string; emoji: string }> = {
+    planning: { label: "Planification", emoji: "🧭" },
+    architecture: { label: "Architecture", emoji: "🏗️" },
+    devops: { label: "DevOps", emoji: "⚙️" },
+    risk: { label: "Risques", emoji: "⚠️" },
+  };
+
   return (
     <div className="results">
-      {entries.map(([key, value]) => (
-        <div key={key} className="result-card">
-          <h3>{key}</h3>
-          <pre>{value}</pre>
-        </div>
-      ))}
+      {entries.map(([key, value]) => {
+        const normalizedKey = key.toLowerCase();
+        const stage = stageMeta[normalizedKey];
+
+        return (
+          <div key={key} className="result-card result-card--stage">
+            <div className="result-card-header">
+              <div className="result-card-title">
+                {stage && (
+                  <span className="result-card-emoji">{stage.emoji}</span>
+                )}
+                <h3>{stage ? stage.label : key}</h3>
+              </div>
+
+              {stage && (
+                <span className="result-stage-pill">
+                  {stage.emoji} {stage.label}
+                </span>
+              )}
+            </div>
+
+            <pre className="result-card-body">{value}</pre>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -151,12 +178,11 @@ export default function App() {
 
   return (
     <div className="page">
-      {/* ✅ new navbar, original content untouched below */}
+      {/* Navbar */}
       <Navbar />
 
       <div className="hero" id="interface">
         <div>
-          <span className="badge">MGL7360 · PoC multi-agents</span>
           <h1 className="title">
             Orchestrateur IA pour concevoir et livrer un projet logiciel
           </h1>
