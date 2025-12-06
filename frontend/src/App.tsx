@@ -41,14 +41,14 @@ function Navbar() {
         <div className="navbar-left">
           <div className="navbar-logo">IA</div>
           <div className="navbar-text">
-            <span className="navbar-kicker">MGL7360 · PoC multi-agents</span>
+            <span className="navbar-kicker">Multi-agent control center</span>
             <span className="navbar-title">Orchestrateur IA</span>
           </div>
         </div>
 
         <nav className="navbar-links">
           <a href="#interface">Interface</a>
-          <a href="#how-it-works">Comment ça marche&nbsp;?</a>
+          <a href="#how-it-works">Guide</a>
           <a href="#models">Modèles</a>
         </nav>
 
@@ -72,7 +72,7 @@ function LoadingDots({ small = false }: { small?: boolean }) {
   );
 }
 
-/** 🔍 Only UI: emojis + expand/collapse, data rendering unchanged */
+/** Results grid with emojis + expand/collapse, data rendering unchanged */
 function ResultGrid({ results }: { results: AgentResult }) {
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
 
@@ -119,6 +119,7 @@ function ResultGrid({ results }: { results: AgentResult }) {
                   type="button"
                   className="result-card-toggle"
                   onClick={() => setExpandedKey(isExpanded ? null : key)}
+                  aria-label={isExpanded ? "Réduire" : "Agrandir"}
                 >
                   {isExpanded ? "−" : "+"}
                 </button>
@@ -206,192 +207,213 @@ export default function App() {
   }
 
   return (
-    <div className="page">
-      {/* Navbar */}
+    <div className="page app-shell">
       <Navbar />
 
-      <div className="hero" id="interface">
-        <div>
-          <h1 className="title">
-            Orchestrateur IA pour concevoir et livrer un projet logiciel
-          </h1>
-          <p className="subtitle">
-            Entrez un objectif et laissez des agents spécialisés (planification,
-            architecture, DevOps, risques) produire un plan cohérent.
-            L&apos;exécution peut être séquentielle ou orchestrée via un graphe
-            LangGraph.
-          </p>
-        </div>
-        <div className="panel" id="how-it-works">
-          <p className="section-title">Mode d&apos;emploi</p>
-          <p className="inline-note">
-            1. Choisissez le fournisseur LLM et le modèle disponible. 2.
-            Sélectionnez le mode (un agent ou tous). 3. Lancez l&apos;analyse.
-            Avec Ollama, récupérez la liste des modèles puis tirez-en un si
-            besoin.
-          </p>
-        </div>
-      </div>
+      <main className="app-main">
+        {/* HERO + GUIDE */}
+        <section className="hero panel panel-glass" id="interface">
+          <div className="hero-text">
+            <h1 className="title">
+              Orchestrateur IA pour concevoir et livrer un projet logiciel
+            </h1>
+            <p className="subtitle">
+              Décrivez votre objectif, et laissez des agents spécialisés
+              (planification, architecture, DevOps, risques) construire une
+              stratégie cohérente. Exécution séquentielle ou via graphe
+              LangGraph.
+            </p>
 
-      <div className="panel">
-        <form onSubmit={onSubmit}>
-          <label>
-            Énoncé du projet
-            <textarea
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Décrivez le contexte, les objectifs et les contraintes du projet à analyser"
-            />
-          </label>
-
-          <label>
-            Mode
-            <select
-              value={mode}
-              onChange={(e) => setMode(e.target.value as Mode)}
-            >
-              {modes.map((m) => (
-                <option key={m.value} value={m.value}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label>
-            Fournisseur
-            <select
-              value={provider}
-              onChange={(e) => setProvider(e.target.value as Provider)}
-            >
-              {providers.map((p) => (
-                <option key={p.value} value={p.value}>
-                  {p.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label>
-            Modèle
-            <input
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-              placeholder="Exemple: gpt-4o-mini ou llama3.1:8b"
-            />
-            {provider === "ollama" && (
-              <span className="inline-note">
-                Doit correspondre à un modèle installé sur votre Ollama local.
-              </span>
-            )}
-          </label>
-
-          <div className="actions">
-            <button
-              className="primary"
-              type="submit"
-              disabled={loading || disabled}
-            >
-              {loading ? (
-                <LoadingDots small />
-              ) : isGraph ? (
-                "Lancer (graphe)"
-              ) : (
-                "Lancer (séquentiel)"
-              )}
-            </button>
-            <button
-              className="secondary"
-              type="button"
-              onClick={() => setIsGraph((prev) => !prev)}
-              disabled={loading}
-            >
-              {isGraph ? "Basculer en séquentiel" : "Basculer en graphe"}
-            </button>
+            <div className="hero-chips">
+              <span className="chip chip--primary">Multi-agents</span>
+              <span className="chip chip--secondary">LLM orchestration</span>
+              <span className="chip chip--outline">Graph / séquentiel</span>
+            </div>
           </div>
 
-          {provider === "ollama" && (
-            <div className="actions">
+          <div className="hero-side panel-inner" id="how-it-works">
+            <p className="section-title">Mode d&apos;emploi</p>
+            <ul className="hero-steps">
+              <li>1. Choisissez le fournisseur LLM et le modèle.</li>
+              <li>2. Sélectionnez le mode (un agent ou tous).</li>
+              <li>3. Lancez l&apos;analyse et explorez les résultats.</li>
+              <li>4. Avec Ollama, listez et mettez à jour vos modèles locaux.</li>
+            </ul>
+          </div>
+        </section>
+
+        {/* CONTROL PANEL */}
+        <section className="panel panel-glass panel-controls">
+          <form onSubmit={onSubmit} className="control-grid">
+            <label className="field">
+              <span className="field-label">Énoncé du projet</span>
+              <textarea
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="Décrivez le contexte, les objectifs et les contraintes du projet à analyser"
+              />
+            </label>
+
+            <div className="control-row">
+              <label className="field">
+                <span className="field-label">Mode</span>
+                <select
+                  value={mode}
+                  onChange={(e) => setMode(e.target.value as Mode)}
+                >
+                  {modes.map((m) => (
+                    <option key={m.value} value={m.value}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="field">
+                <span className="field-label">Fournisseur</span>
+                <select
+                  value={provider}
+                  onChange={(e) => setProvider(e.target.value as Provider)}
+                >
+                  {providers.map((p) => (
+                    <option key={p.value} value={p.value}>
+                      {p.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <label className="field">
+              <span className="field-label">Modèle</span>
+              <input
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+                placeholder="Exemple: gpt-4o-mini ou llama3.1:8b"
+              />
+              {provider === "ollama" && (
+                <span className="inline-note">
+                  Doit correspondre à un modèle installé sur votre Ollama local.
+                </span>
+              )}
+            </label>
+
+            <div className="actions actions--primary">
+              <button
+                className="primary"
+                type="submit"
+                disabled={loading || disabled}
+              >
+                {loading ? (
+                  <LoadingDots small />
+                ) : isGraph ? (
+                  "Lancer (graphe)"
+                ) : (
+                  "Lancer (séquentiel)"
+                )}
+              </button>
+
               <button
                 className="secondary"
                 type="button"
-                onClick={loadOllamaModels}
-                disabled={loadingModels}
+                onClick={() => setIsGraph((prev) => !prev)}
+                disabled={loading}
               >
-                {loadingModels
-                  ? "Chargement modèles..."
-                  : "Lister modèles Ollama"}
+                {isGraph ? "Basculer en séquentiel" : "Basculer en graphe"}
               </button>
-              {ollamaModels.length > 0 && (
-                <span className="inline-note">
-                  Cliquez sur un modèle pour lancer un pull.
-                </span>
-              )}
+            </div>
+
+            {provider === "ollama" && (
+              <div className="actions actions--secondary">
+                <button
+                  className="secondary"
+                  type="button"
+                  onClick={loadOllamaModels}
+                  disabled={loadingModels}
+                >
+                  {loadingModels
+                    ? "Chargement modèles..."
+                    : "Lister modèles Ollama"}
+                </button>
+                {ollamaModels.length > 0 && (
+                  <span className="inline-note">
+                    Cliquez sur un modèle pour lancer un pull.
+                  </span>
+                )}
+              </div>
+            )}
+          </form>
+        </section>
+
+        {/* ERRORS */}
+        {error && (
+          <section className="panel panel-glass panel-error">
+            <p className="error">{error}</p>
+          </section>
+        )}
+
+        {/* OLLAMA MODELS */}
+        {provider === "ollama" && ollamaModels.length > 0 && (
+          <section className="panel panel-glass" id="models">
+            <p className="section-title">Modèles Ollama disponibles</p>
+            <div className="results results--models">
+              {ollamaModels.map((m) => (
+                <div key={m.name} className="result-card result-card--model">
+                  <h3>{m.name}</h3>
+                  <p className="status">
+                    Taille:{" "}
+                    {m.size
+                      ? `${Math.round(m.size / 1_000_000_000)} GB`
+                      : "?"}{" "}
+                    · Digest: {m.digest ? m.digest.slice(0, 12) : "n/a"}
+                  </p>
+                  <div className="actions">
+                    <button
+                      className="secondary"
+                      type="button"
+                      onClick={() => onPullModel(m.name)}
+                    >
+                      Pull/MAJ ce modèle
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {pulled && (
+              <p className="status">
+                Pull lancé pour {pulled}. Suivez les logs Ollama pour la
+                progression.
+              </p>
+            )}
+          </section>
+        )}
+
+        {/* RESULTS */}
+        <section className="panel panel-glass">
+          <div className="actions actions--header">
+            <span className="pill">Résultats agents</span>
+            <span className="inline-note">
+              {isGraph
+                ? "Exécution pilotée par graphe (superviseur → agents)."
+                : "Exécution séquentielle simple sur le backend."}
+            </span>
+          </div>
+
+          {loading && (
+            <div className="loading-wrapper">
+              <LoadingDots />
             </div>
           )}
-        </form>
-      </div>
 
-      {error && <div className="error">{error}</div>}
+          {!loading && <ResultGrid results={results} />}
 
-      {provider === "ollama" && ollamaModels.length > 0 && (
-        <div className="panel" id="models">
-          <p className="section-title">Modèles Ollama disponibles</p>
-          <div className="results">
-            {ollamaModels.map((m) => (
-              <div key={m.name} className="result-card">
-                <h3>{m.name}</h3>
-                <p className="status">
-                  Taille:{" "}
-                  {m.size ? `${Math.round(m.size / 1_000_000_000)} GB` : "?"} ·
-                  Digest: {m.digest ? m.digest.slice(0, 12) : "n/a"}
-                </p>
-                <div className="actions">
-                  <button
-                    className="secondary"
-                    type="button"
-                    onClick={() => onPullModel(m.name)}
-                  >
-                    Pull/MAJ ce modèle
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-          {pulled && (
+          {!Object.keys(results).length && !loading && (
             <p className="status">
-              Pull lancé pour {pulled}. Suivez les logs Ollama pour la
-              progression.
+              Lancez une analyse pour voir les propositions.
             </p>
           )}
-        </div>
-      )}
-
-      <div className="panel">
-        <div className="actions">
-          <span className="pill">Résultats agents</span>
-          <span className="inline-note">
-            {isGraph
-              ? "Exécution pilotée par graphe (superviseur -> agents)."
-              : "Exécution séquentielle simple sur le backend."}
-          </span>
-        </div>
-
-        {/* Futuristic loader while waiting */}
-        {loading && (
-          <div className="loading-wrapper">
-            <LoadingDots />
-          </div>
-        )}
-
-        {!loading && <ResultGrid results={results} />}
-
-        {!Object.keys(results).length && !loading && (
-          <p className="status">
-            Lancez une analyse pour voir les propositions.
-          </p>
-        )}
-      </div>
+        </section>
+      </main>
     </div>
   );
 }
