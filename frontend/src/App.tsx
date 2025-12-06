@@ -61,8 +61,10 @@ function Navbar() {
   );
 }
 
-/** 🔍 Only visuals changed here – data/logic is identical */
+/** 🔍 Only UI added: emojis + expand/collapse, data rendering unchanged */
 function ResultGrid({ results }: { results: AgentResult }) {
+  const [expandedKey, setExpandedKey] = useState<string | null>(null);
+
   const entries = Object.entries(results);
   if (!entries.length) return null;
 
@@ -74,13 +76,20 @@ function ResultGrid({ results }: { results: AgentResult }) {
   };
 
   return (
-    <div className="results">
+    <div className={`results ${expandedKey ? "results--has-expanded" : ""}`}>
       {entries.map(([key, value]) => {
         const normalizedKey = key.toLowerCase();
         const stage = stageMeta[normalizedKey];
+        const isExpanded = expandedKey === key;
 
         return (
-          <div key={key} className="result-card result-card--stage">
+          <div
+            key={key}
+            className={
+              "result-card result-card--stage" +
+              (isExpanded ? " result-card--expanded" : "")
+            }
+          >
             <div className="result-card-header">
               <div className="result-card-title">
                 {stage && (
@@ -89,11 +98,22 @@ function ResultGrid({ results }: { results: AgentResult }) {
                 <h3>{stage ? stage.label : key}</h3>
               </div>
 
-              {stage && (
-                <span className="result-stage-pill">
-                  {stage.emoji} {stage.label}
-                </span>
-              )}
+              <div className="result-card-header-actions">
+                {stage && (
+                  <span className="result-stage-pill">
+                    {stage.emoji} {stage.label}
+                  </span>
+                )}
+                <button
+                  type="button"
+                  className="result-card-toggle"
+                  onClick={() =>
+                    setExpandedKey(isExpanded ? null : key)
+                  }
+                >
+                  {isExpanded ? "Réduire" : "Agrandir"}
+                </button>
+              </div>
             </div>
 
             <pre className="result-card-body">{value}</pre>
