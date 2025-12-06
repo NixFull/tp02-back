@@ -61,7 +61,18 @@ function Navbar() {
   );
 }
 
-/** 🔍 Only UI added: emojis + expand/collapse, data rendering unchanged */
+/** Futuristic 3-dots loader */
+function LoadingDots({ small = false }: { small?: boolean }) {
+  return (
+    <div className={small ? "loading-dots loading-dots--small" : "loading-dots"}>
+      <span />
+      <span />
+      <span />
+    </div>
+  );
+}
+
+/** 🔍 Only UI: emojis + expand/collapse, data rendering unchanged */
 function ResultGrid({ results }: { results: AgentResult }) {
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
 
@@ -107,9 +118,7 @@ function ResultGrid({ results }: { results: AgentResult }) {
                 <button
                   type="button"
                   className="result-card-toggle"
-                  onClick={() =>
-                    setExpandedKey(isExpanded ? null : key)
-                  }
+                  onClick={() => setExpandedKey(isExpanded ? null : key)}
                 >
                   {isExpanded ? "−" : "+"}
                 </button>
@@ -123,7 +132,6 @@ function ResultGrid({ results }: { results: AgentResult }) {
     </div>
   );
 }
-
 
 export default function App() {
   const [prompt, setPrompt] = useState(
@@ -284,11 +292,13 @@ export default function App() {
               type="submit"
               disabled={loading || disabled}
             >
-              {loading
-                ? "Analyse en cours..."
-                : isGraph
-                ? "Lancer (graphe)"
-                : "Lancer (séquentiel)"}
+              {loading ? (
+                <LoadingDots small />
+              ) : isGraph ? (
+                "Lancer (graphe)"
+              ) : (
+                "Lancer (séquentiel)"
+              )}
             </button>
             <button
               className="secondary"
@@ -366,8 +376,17 @@ export default function App() {
               : "Exécution séquentielle simple sur le backend."}
           </span>
         </div>
-        <ResultGrid results={results} />
-        {!Object.keys(results).length && (
+
+        {/* Futuristic loader while waiting */}
+        {loading && (
+          <div className="loading-wrapper">
+            <LoadingDots />
+          </div>
+        )}
+
+        {!loading && <ResultGrid results={results} />}
+
+        {!Object.keys(results).length && !loading && (
           <p className="status">
             Lancez une analyse pour voir les propositions.
           </p>
